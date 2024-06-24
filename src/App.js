@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { useRef } from "react";
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState([]);
+  const ref = useRef();
+
+  const handleSearch = () => {
+    setSearchQuery(
+      users.filter((user) => user.name.toLowerCase().includes(ref.current.value))
+    );
+  };
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -16,20 +25,15 @@ function App() {
     <div className="App">
       <div className="main">
         <h2>検索アプリ</h2>
-        <input type="text" />
+        <input type="text" ref={ref} onChange={() => handleSearch()}/>
         <div className="content">
-          {users.map((user) => (
-            <div className="box">
+          {searchQuery.map((user) => (
+            <div className="box" key={user.id}>
               <h3>{user.name}</h3>
               <hr />
               <p>{user.email}</p>
             </div>
           ))}
-          <div className="box">
-            <h3>ユーザー名</h3>
-            <hr />
-            <p>メールアドレス</p>
-          </div>
         </div>
       </div>
     </div>
